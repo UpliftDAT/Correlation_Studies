@@ -1,0 +1,122 @@
+---
+title: "Spring MAP Correlation to PreACT Performance"
+author: "Data Team"
+date: "8/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Context
+
+For SY 2020-2021, We are using MAP in place of PreACT in the fall for 9th and 10th grade. 
+We need to do an analysis to determine if 8th grade Spring MAP performance correlates to PreACT. 
+If a strong, positive correlation exists, we will present this information for TIA and also create scholar growth goals for PreACT using fall MAP data.
+
+__Things to consider:__
+
+1. Use spring MAP from year X-1 (X-2 for 10th) and compare it to Spring PreACT for year X
+2. Only use MAP Math, Reading, and Science in the analysis
+3. Consider these relationships in the analysis:
+    MAP Math to PreACT Math, 
+    MAP Reading to PreACT Reading, 
+    MAP Reading to PreACT English, 
+    MAP Reading to PreACT Science, 
+    MAP Science to PreACT Science, 
+    MAP Math to PreACT Science
+
+__Definition of Done:__
+
+1. Analysis is completed.
+2. Analysis is reviewed by DAT.
+3. Analysis is presented to HS Director of Curriculum, the Chief Academic Officer, Deputy Chief of Schools, and Chief People Officer.
+
+\br
+
+## MAP Percentile to PreACT Score Correlation
+
+The following tables show the correlation between Spring 8th grade MAP percentiles and Spring 9th and 10th grade PreACT scores. Comparing MAP percentiles to PreACT scores, we see strong positive correlations between all four PreACT subjects and the MAP Reading and Math tests. MAP Math appears to be the best predictor of PreACT Science, although MAP Reading and MAP Science aren't far off. Surprisingly, the correlation is stronger between 8th and 10th grade performance than it is between 8th and 9th grade performance.
+
+\br
+
+##### __9th Grade__
+```{r print_pearson9, echo=F, warning=F, message=F}
+library(tidyverse)
+library(here)
+
+data <- read_csv(here("output/pearson9.csv")) %>% 
+  select(preact_subject, everything()) %>% 
+  rename(`Subject Mapping` = preact_subject,
+         `R*` = r,
+         `P-Value**` = p_val,
+         `R (Lower Bound)***` = r_lower,
+         `R (Upper Bound)***` = r_upper,
+         N = n_tests)
+
+knitr::kable(data)
+```
+
+
+##### __10th Grade__
+```{r print_pearson10, echo=F, warning=F, message=F}
+library(tidyverse)
+library(here)
+
+data <- read_csv(here("output/pearson10.csv")) %>% 
+  select(preact_subject, everything()) %>% 
+  rename(`Subject Mapping` = preact_subject,
+         `R*` = r,
+         `P-Value**` = p_val,
+         `R (Lower Bound)***` = r_lower,
+         `R (Upper Bound)***` = r_upper,
+         N = n_tests)
+
+knitr::kable(data)
+```
+
+<font size = "1"> 
+* The correlation coefficient R ranges from -1 to 1, with positive values indicating a positive relationship (i.e. high MAP scores are associated with _high_ PreACT scores, and vice versa) and negative values reflecting a negative relationship (i.e. high MAP scores are associated with _low_ PreACT scores). The closer the absolute value of R is to 1, the stronger the relationship. 
+
+** P-Value describes the probability that we would observe these R values _if there was no actual relationship_ between MAP and PreACT performance. Here we have P-Values so low that all leading decimal zeroes have been truncated, indicating that it is _extremely unlikely_ that no such relationship exists.
+
+*** The Lower and Upper Bounds describe the probable range of correlation coefficients for each subject. As we are only working with a sample of PreACT/Spring MAP test-takers, there is an inherent level of uncertainty in inferring the true relationship between the two tests. The Bounds express the range of probable R values that we may correspond to the true R-value.
+</font>
+
+\br
+
+## PreACT Score vs MAP Percentile Scatterplot
+
+Here we can see the relationship more clearly: generally speaking, high MAP performers do well on the PreACT. The relationship may not be linear, since we see some bunching toward the highest quintile. Among possible predictors of PreACT Science, only MAP Math is shown.
+
+\br
+
+##### __9th Grade__
+```{r scatterplot9, echo=F, warning=F, message=F}
+knitr::include_graphics(here("figs/percentile_scatterplots9.png"))
+```
+
+
+##### __10th Grade__
+```{r scatterplot10, echo=F, warning=F, message=F}
+knitr::include_graphics(here("figs/percentile_scatterplots10.png"))
+```
+
+\br
+
+## MAP Quintile vs PreACT College Readiness
+
+Cross-tabulating MAP quintiles vs PreACT college readiness (by subject), we see a clear trend in all four subjects: the higher the quintile, the higher the corresponding performance on PreACT. In particular, the highest quintile is an especially strong predictor of college readiness.
+
+\br
+
+##### __9th Grade__
+```{r crosstab9, echo=F, warning=F, message=F}
+knitr::include_graphics(here("figs/map_quintile_preact_bucket_bar_charts9.png"))
+```
+
+##### __10th Grade__
+```{r crosstab10, echo=F, warning=F, message=F}
+knitr::include_graphics(here("figs/map_quintile_preact_bucket_bar_charts10.png"))
+```
